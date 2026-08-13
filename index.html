@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Den Store Gave Quiz</title>
+
+<script/cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.jsscript>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#ffd89b,#19547b);
+    min-height:100vh;
+}
+
+.page{
+    display:none;
+    max-width:700px;
+    margin:20px auto;
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.page.active{
+    display:block;
+}
+
+h1{
+    color:#1f2937;
+}
+
+button{
+    width:100%;
+    padding:18px;
+    margin:10px 0;
+    font-size:1.2rem;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    background:#0078d7;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#005ea6;
+}
+
+.emoji{
+    font-size:100px;
+}
+
+.finish{
+    font-size:140px;
+}
+</style>
+</head>
+<body>
+
+<!-- Velkomst -->
+
+<div id="welcome" class="page active">
+    <div class="emoji">🎁</div>
+
+    <h1>Velkommen til den store gave quiz!</h1>
+
+    <p>
+        Man skal svare rigtigt på samtlige spørgsmål,
+        for at få sin gave!
+    </p>
+
+    <button onclick="showPage('q1')">
+        Start quiz her
+    </button>
+</div>
+
+<!-- Spørgsmål 1 -->
+
+<div id="q1" class="page">
+    <h1>Spørgsmål 1</h1>
+
+    <p>Hvem er den sødeste person på hele Bøgevej?</p>
+
+    <button onclick="correct('q2')">Jesper</button>
+    <button onclick="wrong('q1')">Frederikke</button>
+    <button onclick="wrong('q1')">Thomas</button>
+    <button onclick="wrong('q1')">Anette</button>
+</div>
+
+<!-- Spørgsmål 2 -->
+
+<div id="q2" class="page">
+    <h1>Spørgsmål 2</h1>
+
+    <p>Hvilket bilmærke er klart det bedste (efter 1. november)?</p>
+
+    <button onclick="wrong('q2')">BMW</button>
+    <button onclick="wrong('q2')">Tesla</button>
+    <button onclick="wrong('q2')">Polestar</button>
+    <button onclick="correct('q3')">Mercedes</button>
+</div>
+
+<!-- Spørgsmål 3 -->
+
+<div id="q3" class="page">
+    <h1>Spørgsmål 3</h1>
+
+    <p>
+        Hvor lander man hvis man går efter disse koordinater?
+    </p>
+
+    <p><strong>55.96929693281747, 10.134100497492994</strong></p>
+
+    <button onclick="wrong('q3')">Odder Parkhotel</button>
+    <button onclick="wrong('q3')">Marselisborg Slot</button>
+    <button onclick="correct('q4')">Bøgevej 13</button>
+    <button onclick="wrong('q3')">Månen</button>
+</div>
+
+<!-- Spørgsmål 4 -->
+
+<div id="q4" class="page">
+    <h1>Spørgsmål 4</h1>
+
+    <p>
+        Hvilken stor begivenhed fandt sted d. 16 maj 1987?
+    </p>
+
+    <button onclick="wrong('q4')">Danmarks befrielse</button>
+
+    <button onclick="correct('finish')">
+        En tyk lille dreng blev født
+    </button>
+
+    <button onclick="wrong('q4')">
+        Irland vand Eurovision Song Contest
+    </button>
+
+    <button onclick="wrong('q4')">
+        Den første månelanding
+    </button>
+</div>
+
+<!-- Success -->
+
+<div id="success" class="page">
+    <div class="emoji">🎉</div>
+    <h1>Korrekt svar!</h1>
+    <p>Du sendes videre...</p>
+</div>
+
+<!-- Fejl -->
+
+<div id="wrongPage" class="page">
+    <div class="emoji">❌</div>
+    <h1>Forkert svar</h1>
+    <p>Prøv igen...</p>
+</div>
+
+<!-- Slutside -->
+
+<div id="finish" class="page">
+
+    <div class="finish">
+        🎁🎉🍾
+    </div>
+
+    <h1>
+        Tillykke med 4 rigtige besvarelser!
+    </h1>
+
+    <p>
+        Præmiepengene vil blive indsat på jeres konto
+        inden for den nærmeste fremtid.
+    </p>
+
+    <h2>God fest!</h2>
+
+</div>
+
+<script>
+
+function showPage(id)
+{
+    document.querySelectorAll('.page')
+      .forEach(p => p.classList.remove('active'));
+
+    document.getElementById(id)
+      .classList.add('active');
+}
+
+function playSuccess()
+{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 800;
+
+    osc.connect(ctx.destination);
+    osc.start();
+
+    setTimeout(()=>{
+        osc.stop();
+    },150);
+}
+
+function playWrong()
+{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 250;
+
+    osc.connect(ctx.destination);
+    osc.start();
+
+    setTimeout(()=>{
+        osc.stop();
+    },250);
+}
+
+function smallConfetti()
+{
+    confetti({
+        particleCount:120,
+        spread:90,
+        origin:{y:0.6}
+    });
+}
+
+function bigConfetti()
+{
+    const duration = 4000;
+    const end = Date.now() + duration;
+
+    (function frame(){
+
+        confetti({
+            particleCount:5,
+            angle:60,
+            spread:70,
+            origin:{x:0}
+        });
+
+        confetti({
+            particleCount:5,
+            angle:120,
+            spread:70,
+            origin:{x:1}
+        });
+
+        if(Date.now() < end){
+            requestAnimationFrame(frame);
+        }
+
+    })();
+}
+
+function correct(nextPage)
+{
+    playSuccess();
+    smallConfetti();
+
+    showPage('success');
+
+    setTimeout(() => {
+
+        showPage(nextPage);
+
+        if(nextPage === 'finish')
+        {
+            bigConfetti();
+        }
+
+    }, 2000);
+}
+
+function wrong(returnPage)
+{
+    playWrong();
+
+    showPage('wrongPage');
+
+    setTimeout(() => {
+        showPage(returnPage);
+    }, 1500);
+}
+
+</script>
+
+</body>
+</html>
